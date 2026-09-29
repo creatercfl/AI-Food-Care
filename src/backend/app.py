@@ -22,7 +22,7 @@ from backend.schemas import Question, Answer  # noqa: E402
 
 logger = logging.getLogger(__name__)
 
-app = FastAPI(title="智医助手 KG-QA", version="1.0")
+app = FastAPI(title="AI食护管家 KG-QA", version="1.0")
 
 # 会话签名密钥从配置（环境变量）读取，杜绝硬编码泄露
 app.add_middleware(

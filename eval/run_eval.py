@@ -1,4 +1,4 @@
-"""智医助手 KG-QA 评测跑批脚本。
+"""AI食护管家 KG-QA 评测跑批脚本。
 
 对评测集（eval/eval_set.jsonl）逐题走完整问答链路（HTTP /chat），
 解析回答正文与结构化证据块，从多个维度客观打分并汇总指标，产出
@@ -218,7 +218,7 @@ def write_reports(summary, results, out_dir, base_url, set_path):
         "meta": {
             "timestamp": ts,
             "base_url": base_url,
-            "eval_set": str(set_path),
+            "eval_set": (set_path.relative_to(ROOT).as_posix() if set_path.is_relative_to(ROOT) else str(set_path)),
             "llm_model": "deepseek-chat",
         },
         "summary": summary,
@@ -230,7 +230,7 @@ def write_reports(summary, results, out_dir, base_url, set_path):
         return f"{x*100:.1f}%" if isinstance(x, (int, float)) else "—"
 
     lines = []
-    lines.append(f"# 智医助手 KG-QA 评测报告 · {ts}\n")
+    lines.append(f"# AI食护管家 KG-QA 评测报告 · {ts}\n")
     lines.append(f"- 服务地址：`{base_url}`  评测集：`{Path(set_path).name}`（{summary['total']} 题）\n")
     lines.append("## 一、总体指标\n")
     lines.append("| 指标 | 数值 |")

@@ -2,7 +2,7 @@
   "meta": {
     "timestamp": "20260918_181124",
     "base_url": "http://127.0.0.1:8000",
-    "eval_set": "D:\\ruanjian\\17_尚硅谷大模型项目实战之智医助手\\3.代码\\smart_medical\\eval\\eval_set.jsonl",
+    "eval_set": "eval/eval_set.jsonl",
     "llm_model": "deepseek-chat"
   },
   "summary": {
