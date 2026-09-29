@@ -1,0 +1,41 @@
+{"name": "米饭(蒸)", "aliases": ["米饭", "白米饭", "蒸米饭", "大米饭"], "category": "主食", "per100g": {"energy_kcal": 116, "protein_g": 2.6, "fat_g": 0.3, "carb_g": 25.9, "sodium_mg": 2}, "note": "精制主食升糖较快，糖尿病人群需控制分量"}
+{"name": "面条(煮)", "aliases": ["面条", "挂面", "煮面"], "category": "主食", "per100g": {"energy_kcal": 110, "protein_g": 3.9, "fat_g": 0.5, "carb_g": 24.3, "sodium_mg": 60}, "note": ""}
+{"name": "馒头", "aliases": ["馍", "白面馒头"], "category": "主食", "per100g": {"energy_kcal": 223, "protein_g": 7.0, "fat_g": 1.1, "carb_g": 47.0, "sodium_mg": 165}, "note": ""}
+{"name": "面包", "aliases": ["吐司", "切片面包"], "category": "主食", "per100g": {"energy_kcal": 313, "protein_g": 8.3, "fat_g": 5.1, "carb_g": 58.6, "sodium_mg": 230}, "note": ""}
+{"name": "燕麦片", "aliases": ["燕麦", "麦片"], "category": "主食", "per100g": {"energy_kcal": 377, "protein_g": 15.0, "fat_g": 6.7, "carb_g": 66.9, "sodium_mg": 4}, "note": "全谷物，膳食纤维丰富，适合主食替代"}
+{"name": "小米", "aliases": ["小米粥原料"], "category": "主食", "per100g": {"energy_kcal": 361, "protein_g": 9.0, "fat_g": 3.1, "carb_g": 75.1, "sodium_mg": 4}, "note": ""}
+{"name": "土豆", "aliases": ["马铃薯", "洋芋"], "category": "薯类", "per100g": {"energy_kcal": 81, "protein_g": 2.0, "fat_g": 0.2, "carb_g": 17.2, "sodium_mg": 3}, "note": "淀粉含量高，宜替代部分主食"}
+{"name": "红薯", "aliases": ["地瓜", "甘薯"], "category": "薯类", "per100g": {"energy_kcal": 61, "protein_g": 1.1, "fat_g": 0.2, "carb_g": 24.7, "sodium_mg": 28}, "note": ""}
+{"name": "玉米(鲜)", "aliases": ["玉米", "鲜玉米"], "category": "主食", "per100g": {"energy_kcal": 112, "protein_g": 4.0, "fat_g": 1.2, "carb_g": 22.8, "sodium_mg": 1}, "note": ""}
+{"name": "猪肉(瘦)", "aliases": ["瘦猪肉", "猪肉"], "category": "畜禽肉", "per100g": {"energy_kcal": 143, "protein_g": 20.3, "fat_g": 6.2, "carb_g": 1.5, "sodium_mg": 57}, "note": ""}
+{"name": "牛肉(瘦)", "aliases": ["瘦牛肉", "牛肉"], "category": "畜禽肉", "per100g": {"energy_kcal": 106, "protein_g": 20.2, "fat_g": 2.3, "carb_g": 1.2, "sodium_mg": 53}, "note": "高蛋白低脂肪，健身增肌优选"}
+{"name": "鸡肉(胸)", "aliases": ["鸡胸肉", "鸡脯肉"], "category": "畜禽肉", "per100g": {"energy_kcal": 133, "protein_g": 24.6, "fat_g": 5.0, "carb_g": 0.6, "sodium_mg": 34}, "note": "高蛋白低脂，减脂增肌常用"}
+{"name": "鸡蛋", "aliases": ["蛋", "鸡子"], "category": "蛋类", "per100g": {"energy_kcal": 144, "protein_g": 13.3, "fat_g": 8.8, "carb_g": 2.8, "sodium_mg": 131}, "note": ""}
+{"name": "草鱼", "aliases": ["鱼", "草鱼块"], "category": "水产", "per100g": {"energy_kcal": 113, "protein_g": 16.6, "fat_g": 5.2, "carb_g": 0.0, "sodium_mg": 46}, "note": ""}
+{"name": "虾(基围)", "aliases": ["虾", "基围虾", "海虾"], "category": "水产", "per100g": {"energy_kcal": 101, "protein_g": 18.2, "fat_g": 1.4, "carb_g": 3.9, "sodium_mg": 172}, "note": ""}
+{"name": "猪肝", "aliases": ["猪肝脏"], "category": "内脏", "per100g": {"energy_kcal": 129, "protein_g": 19.3, "fat_g": 3.5, "carb_g": 5.0, "sodium_mg": 68}, "note": "胆固醇与嘌呤偏高，高血脂/痛风人群限量"}
+{"name": "牛奶", "aliases": ["鲜奶", "纯牛奶"], "category": "奶类", "per100g": {"energy_kcal": 54, "protein_g": 3.0, "fat_g": 3.2, "carb_g": 3.4, "sodium_mg": 37}, "note": "乳糖不耐受者可选舒化奶/酸奶"}
+{"name": "酸奶", "aliases": ["酸牛奶"], "category": "奶类", "per100g": {"energy_kcal": 72, "protein_g": 2.5, "fat_g": 2.7, "carb_g": 9.3, "sodium_mg": 39}, "note": ""}
+{"name": "豆腐(北)", "aliases": ["豆腐", "北豆腐", "老豆腐"], "category": "豆制品", "per100g": {"energy_kcal": 98, "protein_g": 12.2, "fat_g": 4.8, "carb_g": 1.5, "sodium_mg": 7}, "note": "植物蛋白优质来源"}
+{"name": "豆浆", "aliases": ["豆奶"], "category": "豆制品", "per100g": {"energy_kcal": 16, "protein_g": 1.8, "fat_g": 0.7, "carb_g": 1.1, "sodium_mg": 3}, "note": ""}
+{"name": "白菜", "aliases": ["大白菜", "小白菜"], "category": "蔬菜", "per100g": {"energy_kcal": 17, "protein_g": 1.5, "fat_g": 0.1, "carb_g": 3.2, "sodium_mg": 57}, "note": ""}
+{"name": "菠菜", "aliases": ["波菜"], "category": "蔬菜", "per100g": {"energy_kcal": 24, "protein_g": 2.6, "fat_g": 0.3, "carb_g": 4.5, "sodium_mg": 85}, "note": "草酸偏高，建议焯水后食用"}
+{"name": "西兰花", "aliases": ["绿花菜", "青花菜"], "category": "蔬菜", "per100g": {"energy_kcal": 36, "protein_g": 4.1, "fat_g": 0.6, "carb_g": 4.3, "sodium_mg": 18}, "note": ""}
+{"name": "西红柿", "aliases": ["番茄", "西红柿子"], "category": "蔬菜", "per100g": {"energy_kcal": 19, "protein_g": 0.9, "fat_g": 0.2, "carb_g": 4.0, "sodium_mg": 5}, "note": ""}
+{"name": "黄瓜", "aliases": ["青瓜"], "category": "蔬菜", "per100g": {"energy_kcal": 15, "protein_g": 0.8, "fat_g": 0.2, "carb_g": 2.9, "sodium_mg": 5}, "note": ""}
+{"name": "胡萝卜", "aliases": ["红萝卜"], "category": "蔬菜", "per100g": {"energy_kcal": 37, "protein_g": 1.0, "fat_g": 0.2, "carb_g": 8.8, "sodium_mg": 71}, "note": ""}
+{"name": "芹菜", "aliases": ["芹菜茎"], "category": "蔬菜", "per100g": {"energy_kcal": 14, "protein_g": 0.8, "fat_g": 0.1, "carb_g": 3.9, "sodium_mg": 159}, "note": "本身含钠偏高，烹饪宜少盐"}
+{"name": "冬瓜", "aliases": ["白瓜"], "category": "蔬菜", "per100g": {"energy_kcal": 11, "protein_g": 0.4, "fat_g": 0.2, "carb_g": 2.6, "sodium_mg": 2}, "note": ""}
+{"name": "南瓜", "aliases": ["倭瓜"], "category": "蔬菜", "per100g": {"energy_kcal": 22, "protein_g": 0.7, "fat_g": 0.1, "carb_g": 5.3, "sodium_mg": 1}, "note": ""}
+{"name": "苹果", "aliases": ["苹果子"], "category": "水果", "per100g": {"energy_kcal": 52, "protein_g": 0.2, "fat_g": 0.2, "carb_g": 13.5, "sodium_mg": 2}, "note": ""}
+{"name": "香蕉", "aliases": ["蕉"], "category": "水果", "per100g": {"energy_kcal": 93, "protein_g": 1.4, "fat_g": 0.2, "carb_g": 22.0, "sodium_mg": 1}, "note": "含糖与钾偏高，肾功能不全者慎食"}
+{"name": "橙子", "aliases": ["橙", "甜橙"], "category": "水果", "per100g": {"energy_kcal": 47, "protein_g": 0.8, "fat_g": 0.2, "carb_g": 11.1, "sodium_mg": 1}, "note": ""}
+{"name": "西瓜", "aliases": ["夏瓜"], "category": "水果", "per100g": {"energy_kcal": 30, "protein_g": 0.6, "fat_g": 0.1, "carb_g": 6.8, "sodium_mg": 3}, "note": "升糖快，糖尿病人群限量"}
+{"name": "葡萄", "aliases": ["提子"], "category": "水果", "per100g": {"energy_kcal": 43, "protein_g": 0.5, "fat_g": 0.2, "carb_g": 10.3, "sodium_mg": 1}, "note": ""}
+{"name": "草莓", "aliases": ["洋莓"], "category": "水果", "per100g": {"energy_kcal": 32, "protein_g": 1.0, "fat_g": 0.2, "carb_g": 7.1, "sodium_mg": 4}, "note": ""}
+{"name": "花生", "aliases": ["花生米", "落花生"], "category": "坚果", "per100g": {"energy_kcal": 567, "protein_g": 24.8, "fat_g": 49.2, "carb_g": 16.2, "sodium_mg": 5}, "note": "高能量高脂肪，每日宜一小把"}
+{"name": "核桃", "aliases": ["胡桃"], "category": "坚果", "per100g": {"energy_kcal": 646, "protein_g": 14.9, "fat_g": 58.8, "carb_g": 19.1, "sodium_mg": 6}, "note": "高能量高脂肪，控制摄入量"}
+{"name": "大豆油", "aliases": ["食用油", "植物油", "色拉油"], "category": "油脂", "per100g": {"energy_kcal": 899, "protein_g": 0.0, "fat_g": 99.9, "carb_g": 0.0, "sodium_mg": 0}, "note": "纯脂肪来源，每日烹调油宜 25-30g"}
+{"name": "白糖", "aliases": ["蔗糖", "砂糖"], "category": "糖", "per100g": {"energy_kcal": 400, "protein_g": 0.0, "fat_g": 0.0, "carb_g": 99.9, "sodium_mg": 0}, "note": "添加糖，建议每日摄入不超过 25g"}
+{"name": "可乐", "aliases": ["碳酸饮料", "汽水"], "category": "饮料", "per100g": {"energy_kcal": 43, "protein_g": 0.0, "fat_g": 0.0, "carb_g": 10.8, "sodium_mg": 12}, "note": "含糖饮料，减重/糖尿病人群应避免"}
+{"name": "啤酒", "aliases": ["麦酒"], "category": "饮料", "per100g": {"energy_kcal": 32, "protein_g": 0.3, "fat_g": 0.0, "carb_g": 3.6, "sodium_mg": 12}, "note": "含酒精，痛风/肝病人群应避免"}

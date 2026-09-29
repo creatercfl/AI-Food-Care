@@ -1,0 +1,37 @@
+# ============================================================
+# smart_medical 项目依赖 (Python 3.10)
+# ------------------------------------------------------------
+# 注意: PyTorch 需使用 CUDA 版本, 单独安装(RTX 4060 / CUDA 12.x):
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cu124
+# 其余依赖: pip install -r requirements.txt
+# ============================================================
+
+# --- 基础 / 配置 ---
+python-dotenv
+pydantic
+tqdm
+
+# --- Web 后端 ---
+fastapi
+uvicorn
+
+# --- 数据库 ---
+neo4j
+pymysql
+chromadb
+
+# --- LangChain / LangGraph 生态 ---
+langchain>=1.0.0
+langchain-core
+langgraph
+langchain-neo4j
+langchain-huggingface
+langchain-openai
+langchain-deepseek
+langchain-ollama
+neo4j-graphrag
+
+# --- 嵌入模型 / 机器学习 ---
+sentence-transformers
+scikit-learn
+huggingface-hub

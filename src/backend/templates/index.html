@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI食护管家 · 饮食营养与医疗问答</title>
+    <script src="/static/marked.min.js"></script>
+    <script src="/static/purify.min.js"></script>
+    <style>
+        :root {
+            --primary: #0ea5e9;
+            --primary-deep: #0284c7;
+            --accent: #14b8a6;
+            --bg-top: #eef7ff;
+            --bg-bottom: #f2fbf9;
+            --bubble-bot: #ffffff;
+            --bubble-user-1: #0ea5e9;
+            --bubble-user-2: #2563eb;
+            --text-main: #1e293b;
+            --text-sub: #64748b;
+            --radius-lg: 20px;
+            --radius-md: 14px;
+            --shadow-soft: 0 6px 24px rgba(14, 116, 144, .10);
+            --shadow-bubble: 0 2px 10px rgba(30, 41, 59, .08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            font-family: "PingFang SC", "Microsoft YaHei", "Segoe UI", system-ui, sans-serif;
+            color: var(--text-main);
+            background:
+                radial-gradient(1200px 500px at 85% -10%, rgba(20, 184, 166, .16), transparent 60%),
+                radial-gradient(1000px 480px at 8% -10%, rgba(14, 165, 233, .18), transparent 60%),
+                linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* ===== 顶部品牌栏 ===== */
+        header {
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 28px;
+            background: rgba(255, 255, 255, .72);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-bottom: 1px solid rgba(14, 165, 233, .14);
+            box-shadow: 0 2px 16px rgba(14, 116, 144, .06);
+            z-index: 10;
+        }
+
+        .logo {
+            width: 44px;
+            height: 44px;
+            border-radius: 13px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            box-shadow: 0 6px 16px rgba(14, 165, 233, .35);
+            flex: 0 0 auto;
+        }
+
+        .logo svg {
+            width: 26px;
+            height: 26px;
+            fill: #fff;
+        }
+
+        .brand h1 {
+            font-size: 19px;
+            font-weight: 700;
+            letter-spacing: .5px;
+            background: linear-gradient(90deg, var(--primary-deep), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand p {
+            font-size: 12px;
+            color: var(--text-sub);
+            margin-top: 2px;
+        }
+
+        .status {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 13px;
+            color: var(--accent);
+            background: rgba(20, 184, 166, .10);
+            border: 1px solid rgba(20, 184, 166, .25);
+            padding: 6px 14px;
+            border-radius: 999px;
+            font-weight: 600;
+        }
+
+        .status .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 0 0 rgba(20, 184, 166, .5);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(20, 184, 166, .45); }
+            70% { box-shadow: 0 0 0 8px rgba(20, 184, 166, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(20, 184, 166, 0); }
+        }
+
+        /* ===== 对话滚动区 ===== */
+        #dialog-area {
+            flex: 1 1 auto;
+            overflow-y: auto;
+            width: 100%;
+            max-width: 880px;
+            margin: 0 auto;
+            padding: 28px 20px 12px;
+            display: flex;
+            flex-direction: column;
+            scroll-behavior: smooth;
+        }
+
+        #dialog-area::-webkit-scrollbar { width: 8px; }
+        #dialog-area::-webkit-scrollbar-thumb {
+            background: rgba(14, 165, 233, .25);
+            border-radius: 8px;
+        }
+        #dialog-area::-webkit-scrollbar-track { background: transparent; }
+
+        /* 消息行（头像 + 气泡） */
+        .msg-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 22px;
+            align-items: flex-start;
+            animation: msgIn .35s cubic-bezier(.22, .9, .35, 1.2);
+        }
+
+        @keyframes msgIn {
+            from { opacity: 0; transform: translateY(14px); }
+            to { opacity: 1; transform: none; }
+        }
+
+        .msg-row.user { flex-direction: row-reverse; }
+
+        .avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            flex: 0 0 auto;
+            display: grid;
+            place-items: center;
+            font-size: 19px;
+            box-shadow: var(--shadow-bubble);
+            user-select: none;
+        }
+
+        .avatar.bot {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+        }
+
+        .avatar.user {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        }
+
+        .message-bubble {
+            max-width: 76%;
+            padding: 13px 17px;
+            border-radius: var(--radius-lg);
+            font-size: 15.5px;
+            line-height: 1.65;
+            word-break: break-word;
+            box-shadow: var(--shadow-bubble);
+        }
+
+        .bot-message {
+            background: var(--bubble-bot);
+            color: var(--text-main);
+            border-top-left-radius: 6px;
+            border: 1px solid rgba(14, 165, 233, .10);
+        }
+
+        .user-message {
+            background: linear-gradient(135deg, var(--bubble-user-1), var(--bubble-user-2));
+            color: #fff;
+            border-top-right-radius: 6px;
+            white-space: pre-wrap;
+        }
+
+        /* ===== 欢迎页推荐问题 ===== */
+        .welcome {
+            text-align: center;
+            margin: 6vh auto 26px;
+            max-width: 560px;
+        }
+
+        .welcome .hero-icon {
+            width: 76px;
+            height: 76px;
+            margin: 0 auto 18px;
+            border-radius: 24px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            box-shadow: 0 14px 34px rgba(14, 165, 233, .35);
+        }
+
+        .welcome .hero-icon svg { width: 42px; height: 42px; fill: #fff; }
+
+        .welcome h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .welcome p { color: var(--text-sub); font-size: 14px; margin-bottom: 22px; }
+
+        .chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .chip {
+            padding: 9px 16px;
+            border-radius: 999px;
+            border: 1px solid rgba(14, 165, 233, .30);
+            background: rgba(255, 255, 255, .8);
+            color: var(--primary-deep);
+            font-size: 13.5px;
+            cursor: pointer;
+            transition: all .25s ease;
+            backdrop-filter: blur(6px);
+        }
+
+        .chip:hover {
+            background: var(--primary);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(14, 165, 233, .35);
+        }
+
+        /* ===== 打字动画 ===== */
+        .typing { display: flex; gap: 5px; align-items: center; padding: 4px 2px; }
+        .typing span {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: var(--primary);
+            animation: blink 1.2s infinite ease-in-out;
+        }
+        .typing span:nth-child(2) { animation-delay: .2s; }
+        .typing span:nth-child(3) { animation-delay: .4s; }
+        @keyframes blink {
+            0%, 80%, 100% { transform: scale(.6); opacity: .4; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        /* ===== 底部输入区 ===== */
+        footer {
+            flex: 0 0 auto;
+            padding: 12px 20px 20px;
+            background: linear-gradient(180deg, transparent, rgba(238, 247, 255, .9));
+        }
+
+        .input-box {
+            width: 100%;
+            max-width: 880px;
+            margin: 0 auto;
+            display: flex;
+            align-items: flex-end;
+            gap: 10px;
+            padding: 10px 10px 10px 18px;
+            background: rgba(255, 255, 255, .92);
+            backdrop-filter: blur(12px);
+            border: 1.5px solid rgba(14, 165, 233, .18);
+            border-radius: 26px;
+            box-shadow: var(--shadow-soft);
+            transition: border-color .25s ease, box-shadow .25s ease;
+        }
+
+        .input-box:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 8px 28px rgba(14, 165, 233, .22);
+        }
+
+        #user-input {
+            flex: 1;
+            border: none;
+            outline: none;
+            resize: none;
+            background: transparent;
+            font: inherit;
+            font-size: 15.5px;
+            line-height: 1.5;
+            max-height: 160px;
+            padding: 8px 0;
+            color: var(--text-main);
+        }
+
+        #user-input::placeholder { color: #9aa7b8; }
+
+        #send-btn {
+            flex: 0 0 auto;
+            width: 42px;
+            height: 42px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, var(--primary), var(--primary-deep));
+            box-shadow: 0 6px 16px rgba(14, 165, 233, .4);
+            transition: transform .2s ease, box-shadow .2s ease, opacity .2s ease;
+        }
+
+        #send-btn svg { width: 20px; height: 20px; fill: #fff; margin-left: 2px; }
+
+        #send-btn:hover:not(:disabled) { transform: translateY(-2px) scale(1.04); }
+        #send-btn:active:not(:disabled) { transform: scale(.96); }
+        #send-btn:disabled { opacity: .45; cursor: not-allowed; box-shadow: none; }
+
+        .hint {
+            text-align: center;
+            font-size: 12px;
+            color: #9aa7b8;
+            margin-top: 8px;
+        }
+
+        /* ===== Markdown 内容 ===== */
+        .markdown-content { max-width: 100%; overflow-x: auto; }
+        .markdown-content br { display: none; }
+        .markdown-content h1,
+        .markdown-content h2,
+        .markdown-content h3 {
+            margin: .9em 0 .5em;
+            color: var(--primary-deep);
+            line-height: 1.3;
+        }
+        .markdown-content h1 { font-size: 1.35em; }
+        .markdown-content h2 { font-size: 1.2em; }
+        .markdown-content h3 { font-size: 1.08em; }
+        .markdown-content p { margin: .5em 0; }
+        .markdown-content ul,
+        .markdown-content ol { margin: .5em 0; padding-left: 1.4em; }
+        .markdown-content li { margin: .25em 0; }
+        .markdown-content strong { color: var(--primary-deep); }
+        .markdown-content code {
+            background: rgba(14, 165, 233, .10);
+            color: var(--primary-deep);
+            padding: .15em .45em;
+            border-radius: 6px;
+            font-family: Consolas, "SF Mono", monospace;
+            font-size: .9em;
+        }
+        .markdown-content pre {
+            background: #0f172a;
+            color: #e2e8f0;
+            padding: 1em;
+            border-radius: var(--radius-md);
+            overflow-x: auto;
+            margin: 1em 0;
+        }
+        .markdown-content pre code { background: none; color: inherit; padding: 0; }
+        .markdown-content blockquote {
+            border-left: 4px solid var(--accent);
+            background: rgba(20, 184, 166, .08);
+            padding: .6em 1em;
+            border-radius: 0 10px 10px 0;
+            margin: .8em 0;
+            color: #334155;
+        }
+        .markdown-content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: .9em 0;
+            font-size: .93em;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 6px rgba(30, 41, 59, .08);
+        }
+        .markdown-content th {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: #fff;
+            font-weight: 600;
+            text-align: left;
+        }
+        .markdown-content th,
+        .markdown-content td { padding: 9px 13px; border: 1px solid rgba(14, 165, 233, .14); }
+        .markdown-content tbody tr:nth-child(even) { background: rgba(14, 165, 233, .05); }
+        .markdown-content hr { border: none; border-top: 1px dashed rgba(14, 165, 233, .3); margin: 1em 0; }
+
+        /* ===== 回答依据（证据溯源）卡片 ===== */
+        .evidence-card { margin-top: 10px; }
+        .evidence-card:empty { display: none; }
+        .ev-details {
+            border: 1px solid rgba(20, 184, 166, .28);
+            background: rgba(20, 184, 166, .06);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .ev-details summary {
+            cursor: pointer;
+            padding: 9px 14px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #0f766e;
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            user-select: none;
+        }
+        .ev-details summary::-webkit-details-marker { display: none; }
+        .ev-details summary::before { content: '▸'; transition: transform .2s ease; }
+        .ev-details[open] summary::before { transform: rotate(90deg); }
+        .ev-body { padding: 4px 14px 12px; display: flex; flex-direction: column; gap: 10px; }
+        .ev-item { font-size: 12.5px; color: #334155; }
+        .ev-item code {
+            background: rgba(14, 165, 233, .10);
+            color: var(--primary-deep);
+            padding: .1em .4em;
+            border-radius: 5px;
+            font-family: Consolas, monospace;
+        }
+        .ev-item strong { color: #0f766e; }
+        .ev-tag {
+            display: inline-block;
+            padding: 1px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-right: 6px;
+        }
+        .ev-tag-align { background: rgba(14, 165, 233, .15); color: var(--primary-deep); }
+        .ev-tag-query { background: rgba(20, 184, 166, .15); color: #0f766e; }
+        .ev-tag-guard { background: rgba(245, 158, 11, .18); color: #b45309; }
+        .ev-tag-super { background: rgba(139, 92, 246, .16); color: #6d28d9; }
+        .ev-tag-guide { background: rgba(99, 102, 241, .14); color: #4338ca; }
+        .ev-tag-nutri { background: rgba(16, 185, 129, .16); color: #047857; }
+        .ev-count { color: var(--text-sub); font-size: 11.5px; }
+        .ev-cypher {
+            margin: 6px 0 4px;
+            background: #0f172a;
+            color: #a5f3fc;
+            padding: 8px 10px;
+            border-radius: 8px;
+            font-family: Consolas, monospace;
+            font-size: 11.5px;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .ev-rows { display: flex; flex-direction: column; gap: 4px; }
+        .ev-row {
+            background: rgba(255, 255, 255, .7);
+            border: 1px solid rgba(14, 165, 233, .12);
+            border-radius: 6px;
+            padding: 4px 8px;
+            font-family: Consolas, monospace;
+            font-size: 11px;
+            color: #475569;
+            word-break: break-all;
+        }
+
+        @media (max-width: 640px) {
+            .message-bubble { max-width: 86%; }
+            .brand p { display: none; }
+            header { padding: 12px 16px; }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <svg viewBox="0 0 24 24"><path d="M19 8h-2V6a5 5 0 0 0-10 0v2H5a1 1 0 0 0-1 1v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9a1 1 0 0 0-1-1Zm-10-2a3 3 0 0 1 6 0v2H9Zm4 8.72V17a1 1 0 0 1-2 0v-2.28a2 2 0 1 1 2 0Z"/></svg>
+        </div>
+        <div class="brand">
+            <h1>AI食护管家</h1>
+            <p>饮食营养分析 · 医疗知识图谱问答</p>
+        </div>
+        <div class="status"><span class="dot"></span>在线</div>
+    </header>
+
+    <div id="dialog-area">
+        <div class="welcome" id="welcome">
+            <div class="hero-icon">
+                <svg viewBox="0 0 24 24"><path d="M19 8h-2V6a5 5 0 0 0-10 0v2H5a1 1 0 0 0-1 1v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9a1 1 0 0 0-1-1Zm-10-2a3 3 0 0 1 6 0v2H9Zm4 8.72V17a1 1 0 0 1-2 0v-2.28a2 2 0 1 1 2 0Z"/></svg>
+            </div>
+            <h2>您好，我是 AI食护管家 👋</h2>
+            <p>我可以为您分析食物营养成分，并基于医疗知识图谱解答疾病、用药、饮食禁忌等问题</p>
+            <div class="chips">
+                <button class="chip">感冒了应该吃什么药？</button>
+                <button class="chip">高血压如何预防？</button>
+                <button class="chip">糖尿病的饮食禁忌有哪些？</button>
+                <button class="chip">鸡胸肉的营养成分怎么样？</button>
+                <button class="chip">发烧 38.5℃ 该怎么处理？</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="input-box">
+            <textarea id="user-input" rows="1" placeholder="描述您的健康问题，例如：感冒了应该吃什么药？"></textarea>
+            <button id="send-btn" title="发送" onclick="sendMessage()">
+                <svg viewBox="0 0 24 24"><path d="M2.01 21 23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+            </button>
+        </div>
+        <div class="hint">Enter 发送 · Shift + Enter 换行 · 回答仅供参考，就医请遵医嘱</div>
+    </footer>
+
+    <script>
+        const dialogArea = document.getElementById('dialog-area');
+        const input = document.getElementById('user-input');
+        const sendBtn = document.getElementById('send-btn');
+        const welcome = document.getElementById('welcome');
+
+        const BOT_AVATAR_SVG = '<svg viewBox="0 0 24 24" width="20" height="20" fill="#fff"><path d="M19 8h-2V6a5 5 0 0 0-10 0v2H5a1 1 0 0 0-1 1v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9a1 1 0 0 0-1-1Zm-10-2a3 3 0 0 1 6 0v2H9Zm4 8.72V17a1 1 0 0 1-2 0v-2.28a2 2 0 1 1 2 0Z"/></svg>';
+
+        marked.setOptions({
+            breaks: false,
+            highlight: function (code, lang) {
+                if (typeof hljs !== 'undefined') {
+                    return hljs.highlight(code, { language: lang }).value;
+                }
+                return code;
+            }
+        });
+
+        function updateMarkdownContent(container, content) {
+            try {
+                const dirty = marked.parse(content.toString());
+                container.innerHTML = DOMPurify.sanitize(dirty, {
+                    ADD_TAGS: ["iframe"],
+                    ADD_ATTR: ["allowfullscreen", "src", "frameborder"]
+                });
+            } catch (e) {
+                console.warn('Markdown 渲染出错:', e);
+                container.textContent = content;
+            }
+        }
+
+        // 证据块哨兵（与后端 chat_service.EVIDENCE_SENTINEL 保持一致）
+        const EVIDENCE_SENTINEL = "\n<!--EVIDENCE-->\n";
+
+        function escHtml(s) {
+            return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            }[c]));
+        }
+
+        // 拆分"回答正文 + 结构化证据"：正文走 Markdown，证据渲染为"回答依据"卡片
+        function renderStream(mdContainer, evContainer, text) {
+            let mdText = text;
+            let evData = null;
+            const idx = text.indexOf(EVIDENCE_SENTINEL);
+            if (idx >= 0) {
+                mdText = text.slice(0, idx);
+                try { evData = JSON.parse(text.slice(idx + EVIDENCE_SENTINEL.length)); } catch (e) { evData = null; }
+            }
+            updateMarkdownContent(mdContainer, mdText);
+            if (evContainer && evData) renderEvidence(evContainer, evData.evidence || []);
+        }
+
+        function renderEvidence(container, evidence) {
+            if (!evidence || !evidence.length) { container.innerHTML = ''; return; }
+            const supers = evidence.filter(e => e.tool === 'supervisor');
+            const aligns = evidence.filter(e => e.tool === 'entity_alignment');
+            const queries = evidence.filter(e => e.tool === 'neo4j_query');
+            const guides = evidence.filter(e => e.tool === 'guideline_rag');
+            const nutris = evidence.filter(e => e.tool === 'nutrition');
+            const guards = evidence.filter(e => e.tool === 'guardrail');
+            let html = '<details class="ev-details"><summary>📚 回答依据 · ' + evidence.length + ' 条分诊/检索/对齐记录</summary><div class="ev-body">';
+            supers.forEach(s => {
+                html += '<div class="ev-item"><span class="ev-tag ev-tag-super">Supervisor 分诊</span>'
+                    + '<strong>' + escHtml(s.expert_name || s.expert) + '</strong>'
+                    + '<span class="ev-count"> · 置信度 ' + escHtml(s.confidence) + (s.need_guideline ? ' · 需指南回退' : '') + '</span>'
+                    + '<br>' + escHtml(s.rationale || '') + '</div>';
+            });
+            guards.forEach(g => {
+                html += '<div class="ev-item"><span class="ev-tag ev-tag-guard">安全护栏</span>'
+                    + '人群：' + escHtml((g.populations || []).join('、') || '无')
+                    + '；红旗症状：' + escHtml((g.red_flags || []).join('、') || '无')
+                    + '；禁忌命中：' + (g.redlines || []).length + ' 条</div>';
+            });
+            aligns.forEach(a => {
+                html += '<div class="ev-item"><span class="ev-tag ev-tag-align">实体对齐</span>'
+                    + '<code>' + escHtml(a.original) + '</code> → <strong>' + escHtml(a.aligned) + '</strong></div>';
+            });
+            queries.forEach((q, i) => {
+                html += '<div class="ev-item"><span class="ev-tag ev-tag-query">图谱查询 ' + (i + 1) + '</span>'
+                    + '<span class="ev-count">返回 ' + q.row_count + ' 行</span>'
+                    + '<pre class="ev-cypher">' + escHtml(q.cypher) + '</pre>';
+                if (q.rows && q.rows.length) {
+                    html += '<div class="ev-rows">' + q.rows.slice(0, 5).map(r =>
+                        '<div class="ev-row">' + escHtml(JSON.stringify(r)) + '</div>').join('') + '</div>';
+                }
+                html += '</div>';
+            });
+            guides.forEach(gd => {
+                html += '<div class="ev-item"><span class="ev-tag ev-tag-guide">指南回退</span>'
+                    + '<span class="ev-count">检索「' + escHtml(gd.query) + '」命中 ' + (gd.hit_count || 0) + ' 条</span>';
+                if (gd.hits && gd.hits.length) {
+                    html += '<div class="ev-rows">' + gd.hits.map(h =>
+                        '<div class="ev-row">《' + escHtml(h.title) + '》 相关度 ' + escHtml(h.score) + ' · ' + escHtml(h.source) + '</div>').join('') + '</div>';
+                }
+                html += '</div>';
+            });
+            nutris.forEach(n => {
+                if (!n.found) {
+                    html += '<div class="ev-item"><span class="ev-tag ev-tag-nutri">营养查询</span>'
+                        + '未收录「' + escHtml(n.food) + '」</div>';
+                    return;
+                }
+                const p = n.record.per100g;
+                html += '<div class="ev-item"><span class="ev-tag ev-tag-nutri">营养成分</span>'
+                    + '<strong>' + escHtml(n.record.matched_name) + '</strong>'
+                    + '<span class="ev-count"> · 每100g可食部</span>'
+                    + '<br>能量 ' + p.energy_kcal + ' kcal｜蛋白质 ' + p.protein_g + ' g｜脂肪 ' + p.fat_g
+                    + ' g｜碳水 ' + p.carb_g + ' g｜钠 ' + p.sodium_mg + ' mg'
+                    + ((n.record.tags && n.record.tags.length) ? '<br>标签：' + escHtml(n.record.tags.join('、')) : '')
+                    + '</div>';
+            });
+            html += '</div></details>';
+            container.innerHTML = html;
+        }
+
+        function scrollToBottom() {
+            dialogArea.scrollTop = dialogArea.scrollHeight;
+        }
+
+        function hideWelcome() {
+            if (welcome) welcome.style.display = 'none';
+        }
+
+        // 添加消息（带头像的行），返回气泡内的 markdown 容器或气泡本身
+        function addMessage(content, isUser) {
+            hideWelcome();
+            const row = document.createElement('div');
+            row.className = 'msg-row ' + (isUser ? 'user' : 'bot');
+
+            const avatar = document.createElement('div');
+            avatar.className = 'avatar ' + (isUser ? 'user' : 'bot');
+            if (isUser) { avatar.textContent = '🧑'; } else { avatar.innerHTML = BOT_AVATAR_SVG; }
+
+            const bubble = document.createElement('div');
+            bubble.classList.add('message-bubble', isUser ? 'user-message' : 'bot-message');
+
+            let markdownContainer = null;
+            let evidenceContainer = null;
+            if (isUser) {
+                bubble.textContent = content;
+            } else {
+                markdownContainer = document.createElement('div');
+                markdownContainer.className = 'markdown-content';
+                if (content) updateMarkdownContent(markdownContainer, content);
+                bubble.appendChild(markdownContainer);
+                // 证据溯源卡片容器（回答依据）
+                evidenceContainer = document.createElement('div');
+                evidenceContainer.className = 'evidence-card';
+                bubble.appendChild(evidenceContainer);
+            }
+
+            row.appendChild(avatar);
+            row.appendChild(bubble);
+            dialogArea.appendChild(row);
+            scrollToBottom();
+            return isUser ? bubble : { md: markdownContainer, ev: evidenceContainer };
+        }
+
+        function createLoadingBubble() {
+            hideWelcome();
+            const row = document.createElement('div');
+            row.className = 'msg-row bot';
+            const avatar = document.createElement('div');
+            avatar.className = 'avatar bot';
+            avatar.innerHTML = BOT_AVATAR_SVG;
+            const bubble = document.createElement('div');
+            bubble.classList.add('message-bubble', 'bot-message');
+            const typing = document.createElement('div');
+            typing.className = 'typing';
+            typing.innerHTML = '<span></span><span></span><span></span>';
+            bubble.appendChild(typing);
+            row.appendChild(avatar);
+            row.appendChild(bubble);
+            return row;
+        }
+
+        async function sendMessage(preset) {
+            const message = (preset !== undefined ? preset : input.value).trim();
+            if (!message) return;
+
+            sendBtn.disabled = true;
+            addMessage(message, true);
+            if (preset === undefined) { input.value = ''; input.style.height = 'auto'; }
+
+            const containers = addMessage('', false);
+            const markdownContainer = containers.md;
+            const evidenceContainer = containers.ev;
+            const loadingRow = createLoadingBubble();
+            dialogArea.appendChild(loadingRow);
+            scrollToBottom();
+
+            try {
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message })
+                });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder('utf-8');
+                let accumulatedText = '';
+                loadingRow.remove();
+
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+                    accumulatedText += decoder.decode(value, { stream: true });
+                    renderStream(markdownContainer, evidenceContainer, accumulatedText);
+                    scrollToBottom();
+                }
+            } catch (error) {
+                console.error('流式请求出错:', error);
+                loadingRow.remove();
+                updateMarkdownContent(markdownContainer, '系统暂时无法响应，请稍后再试 😥');
+            } finally {
+                sendBtn.disabled = false;
+                input.focus();
+            }
+        }
+
+        // 推荐问题点击
+        document.querySelectorAll('.chip').forEach(btn => {
+            btn.addEventListener('click', () => sendMessage(btn.textContent));
+        });
+
+        input.addEventListener('input', () => {
+            input.style.height = 'auto';
+            input.style.height = Math.min(input.scrollHeight, 160) + 'px';
+        });
+
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+
+</html>
